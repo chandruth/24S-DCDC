@@ -1,0 +1,44 @@
+name: KiCad Fabrication Exports\
+\
+on:\
+  push:\
+    branches: [ main ]\
+  workflow_dispatch:\
+\
+jobs:\
+  export:\
+    runs-on: ubuntu-latest\
+    # Official KiCad container for kicad-cli\
+    container:\
+      image: kicad/kicad:8.0  # from Docker Hub\
+    steps:\
+      - uses: actions/checkout@v4\
+\
+      - name: Export Gerbers\
+        run: |\
+          mkdir -p build/gerbers\
+          kicad-cli pcb export gerbers hardware/kicad/24S-DCDC.kicad_pcb \\\
+            --output build/gerbers \\\
+            --layers F.Cu,In1.Cu,In2.Cu,In3.Cu,In4.Cu,B.Cu,F.SilkS,B.SilkS,F.Mask,B.Mask,Edge.Cuts\
+\
+      - name: Export Excellon Drills + Map\
+        run: |\
+          mkdir -p build/drill\
+          kicad-cli pcb export drill hardware/kicad/24S-DCDC.kicad_pcb \\\
+            --output build/drill --format excellon --generate-map --map-format gerber\
+\
+      - name: Export STEP\
+        run: |\
+          mkdir -p build/3d\
+          kicad-cli pcb export step hardware/kicad/24S-DCDC.kicad_pcb \\\
+            --output build/3d/24S-DCDC.step\
+\
+      - name: Upload Fabrication Artifacts\
+        uses: actions/upload-artifact@v4\
+        with:\
+          name: 24S-DCDC-Fabrication\
+          path: |\
+            build/gerbers\
+            build/drill\
+            build/3d\
+          if-no-files-found: error}
