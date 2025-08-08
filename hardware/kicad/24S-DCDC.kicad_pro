@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "project": {
+    "title": "24S-DCDC",
+    "company": "Generated in-chat",
+    "rev": "v0.4",
+    "comment": "Skeleton pre-route; open in KiCad 8+; reassign footprints; run DRC."
+  },
+  "board": {
+    "last_opened": "2025-08-08T09:22:11.249937Z"
+  }
+}
